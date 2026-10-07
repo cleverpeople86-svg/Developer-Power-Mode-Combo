@@ -74,7 +74,7 @@ particles.
 
 Content scripts do not run on Chrome's restricted pages, extension pages, or
 other pages Chrome blocks. Custom editors may implement input differently, so
-compatibility with every editor 
+compatibility with every custom editor is not guaranteed.
 
 ## Tests
 
