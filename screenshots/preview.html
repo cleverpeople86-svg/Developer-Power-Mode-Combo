@@ -60,21 +60,28 @@
       body.typing-preview .topline,
       body.typing-preview .eyebrow,
       body.typing-preview h1,
-      body.typing-preview .lede,
       body.typing-preview label[for="notes"],
       body.typing-preview #notes,
       body.typing-preview .hint,
       body.typing-preview .chips { display: none; }
-      body.typing-preview main { margin: 0 auto; padding-top: 18px; }
-      body.typing-preview .card { display: flex; align-items: center; gap: 10px; margin-top: 0; padding: 10px; }
-      body.typing-preview label[for="type-here"] { flex: 0 0 145px; margin: 0; }
-      body.typing-preview #type-here { flex: 1; min-width: 0; }
+      body.typing-preview main { margin: 0 auto; padding-top: 86px; }
+      body.typing-preview .lede { margin: 0 0 11px; font-size: 13px; }
+      body.typing-preview .card { margin-top: 0; padding: 14px 17px; }
+      body.typing-preview label[for="type-here"] { margin-bottom: 6px; }
+      body.typing-preview #type-here { min-height: 50px; font-size: 15px; }
     </style>
   </head>
   <body>
     <script>
-      if (new URLSearchParams(location.search).has("typing")) {
+      const previewOptions = new URLSearchParams(location.search);
+      if (previewOptions.has("typing")) {
         document.body.classList.add("typing-preview");
+      }
+      if (previewOptions.has("capture")) {
+        Object.defineProperty(document, "hidden", {
+          configurable: true,
+          get: () => false
+        });
       }
     </script>
     <div class="topline"></div>

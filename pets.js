@@ -2,73 +2,136 @@
   "use strict";
 
   const palette = Object.freeze({
-    "C": "#e89956",
-    "c": "#f4c873",
-    "E": "#ffe2a4",
-    "K": "#ff91bb",
-    "k": "#c972a0",
-    "P": "#49364d",
-    "W": "#fff7ec",
-    "O": "#a884ff",
-    "o": "#f4a5ff"
+    c: "#583c37",
+    C: "#cf7740",
+    H: "#eea75b",
+    F: "#fff0cf",
+    W: "#fffaf4",
+    I: "#de8c85",
+    R: "#ed9a96",
+    K: "#d0d9df",
+    k: "#66748d",
+    L: "#f3e5dd",
+    Y: "#f6d474",
+    P: "#382c45",
+    N: "#44323b",
+    M: "#dc8b9b",
+    O: "#644ab5",
+    o: "#9573eb",
+    a: "#c9adff"
   });
 
+  function frames(rows) {
+    return Object.freeze(rows.map((frame) => Object.freeze(
+      frame.map((row) => {
+        if (row.length > 24) {
+          throw new RangeError(`Pet sprite row has ${row.length} pixels: ${row}`);
+        }
+        return row.padEnd(24, ".");
+      })
+    )));
+  }
+
   const sprites = Object.freeze({
-    corgi: Object.freeze([
-      "................",
-      "...cccc.........",
-      "..cCCCCcc.......",
-      ".cCCCCCCc.......",
-      ".cPPcCCc........",
-      ".cEccEEc......cc",
-      "..ccEEEc.....cCC",
-      "...cCCCc....cCCc",
-      "...cCccccc.cCCc.",
-      ".c.cCCCCCCCCc...",
-      "cccccCCCcEEcc...",
-      "..cCCCCcEEEEc...",
-      "...cCCCcEEEcc...",
-      "...cCccccc......",
-      "...cc...cc......",
-      "................"
+    corgi: frames([
+      [
+        "....................",
+        "...........cc..cc...",
+        "..........cHHc.cHHc..",
+        "..........cHIHccHIHc.",
+        ".........cHHHHHHHHHc.",
+        "..cc....cHHHHHHHHHHHc",
+        ".cHHc..cHHHHHHHHHPPHHc",
+        "cHHHHcccHHHHHHHHHcWcWc",
+        "cHHHHHHHHHHHHHHHHHHNNc",
+        "cHHHHHHHFFHHHHHHHHcRRc",
+        ".cHHHHHHFFFHHHHHHHHccc.",
+        "..cHHHHHFFHHHHHHHHc....",
+        "...ccHHHFFHHHHHHHc.....",
+        ".....cFFFHHHHHHc........",
+        "......cFFFFcccc.........",
+        "......cc....cc.........."
+      ],
+      [
+        "....................",
+        "...........cc..cc...",
+        "..........cHHc.cHHc..",
+        "..........cHIHccHIHc.",
+        ".........cHHHHHHHHHc.",
+        "..cc....cHHHHHHHHHHHc",
+        ".cHHc..cHHHHHHHHHPPHHc",
+        "cHHHHcccHHHHHHHHHcWcWc",
+        "cHHHHHHHHHHHHHHHHHHNNc",
+        "cHHHHHHHFFHHHHHHHHcRRc",
+        ".cHHHHHHFFFHHHHHHHHccc.",
+        "..cHHHHHFFHHHHHHHHc....",
+        "...ccHHHFFHHHHHHHc.....",
+        ".....cFFFHHHHHHc........",
+        "........ccFFFFcccc......",
+        "........cc....cc........"
+      ]
     ]),
-    kitty: Object.freeze([
-      "................",
-      "......kk........",
-      ".....kKk.kKk....",
-      "....kKKK.kKKk...",
-      "...kKKKKKkKKKk..",
-      "...kKPPk.KPPKk..",
-      "...kKKKKKKKKKk..",
-      "...kK.W.KK.KKk..",
-      "....kKKKKKKKk...",
-      ".....kKKKKKk....",
-      ".....kKkckKk....",
-      "....kkk.ckkk....",
-      "...kk...kk......",
-      "..kk....kk......",
-      "................",
-      "................"
+    kitty: frames([
+      [
+        ".............cc..cc...",
+        "............cKKc.cKKc..",
+        "...........cKKIkcKKIKc.",
+        "..........cKKKKccKKKKc.",
+        "..........cKkKKKKKKkKc.",
+        ".........cKKKKKKKKKKKKc",
+        "...cc...cKKYKKKKKKKKYKKc",
+        "..cKKc.cKKPKKKKKKKKKPKKc",
+        "..cKKKccKKKKKKKKKKKKKKKc",
+        "..cKKKKKKKKKKKKKKKKKKLLc",
+        "...cKKKKKKKKKKKKKKKKLLMc",
+        "....cKKKKKKKKKKKKKKKLLcc",
+        ".....cKKKKKLLLLKKKKKKc",
+        "......ccKKLLLLLLKKKcc",
+        "........cc.....cc.......",
+        "........cKc...cKc......."
+      ],
+      [
+        ".............cc..cc...",
+        "............cKKc.cKKc..",
+        "...........cKKIkcKKIKc.",
+        "..........cKKKKccKKKKc.",
+        "..........cKkKKKKKKkKc.",
+        ".........cKKKKKKKKKKKKc",
+        "...cc...cKKYKKKKKKKKYKKc",
+        "..cKKc.cKKPKKKKKKKKKPKKc",
+        "..cKKKccKKKKKKKKKKKKKKKc",
+        "..cKKKKKKKKKKKKKKKKKKLLc",
+        "...cKKKKKKKKKKKKKKKKLLMc",
+        "....cKKKKKKKKKKKKKKKLLcc",
+        ".....cKKKKKLLLLKKKKKKc",
+        "......ccKKLLLLLLKKKcc",
+        "............cc.....cc...",
+        "............cKc...cKc..."
+      ]
     ]),
-    octopus: Object.freeze([
-      "................",
-      ".....OOOOOO.....",
-      "...OOoOOOOoOO...",
-      "..OOoOOOOOOoOO..",
-      ".OOOOOOOOOOOOOO.",
-      ".OOPOOOOOOPOOOO.",
-      ".OOOOOO.OOOOOOO.",
-      "..OOOOOOOOOOOO..",
-      "...OOOOOOOOOO...",
-      "....OOOOOOOO....",
-      "................",
-      "................",
-      "................",
-      "................",
-      "................",
-      "................"
+    octopus: frames([
+      [
+        "........cOOOOOOc.....",
+        "......cOoOOOOOOoOc...",
+        ".....cOooOOOOOOooOc..",
+        "....cOoOOOOOOOOOOoOc.",
+        "...cOoOOOOOOOOOOOOoOc",
+        "..cOoOOOOPPOOOOOOOOoOc",
+        "..cOOOOOOWWOOOOOOOOOoc",
+        "...cOOOROOOOROOOOOOOc.",
+        "....cOOOOOOOOOOOOOc...",
+        "......cOOOOOOOOOc.....",
+        "..........cc...........",
+        "........................",
+        "........................",
+        "........................",
+        "........................",
+        "........................"
+      ]
     ])
   });
 
-  root.DPMPets = Object.freeze({ palette, sprites });
+  const api = Object.freeze({ palette, sprites });
+  root.DPMPets = api;
+  if (typeof module !== "undefined" && module.exports) module.exports = api;
 })(typeof globalThis !== "undefined" ? globalThis : this);

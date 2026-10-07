@@ -244,8 +244,9 @@
     state.pendingInput = null;
   }, true);
 
-  function drawSprite(kind, x, y, scale) {
-    const sprite = DPMPets.sprites[kind];
+  function drawSprite(kind, x, y, scale, now, phase) {
+    const spriteFrames = DPMPets.sprites[kind];
+    const sprite = spriteFrames[Math.floor(now / 175 + phase) % spriteFrames.length];
     const palette = DPMPets.palette;
     for (let row = 0; row < sprite.length; row += 1) {
       for (let column = 0; column < sprite[row].length; column += 1) {
@@ -257,18 +258,18 @@
     }
   }
 
-  function createPet(kind, delay = 0, visibleX = null) {
-    const fromLeft = state.random() < 0.5;
-    const scale = 2 + state.random() * 1.15;
+  function createPet(kind, delay = 0, visibleX = null, fromLeft = state.random() < 0.5) {
+    const scale = 2.3 + state.random() * 0.35;
     return {
       kind,
       x: visibleX === null ? (fromLeft ? -64 : state.width + 64) : visibleX,
-      y: 7 + state.random() * 6,
-      speed: (13 + state.random() * 19) * (fromLeft ? 1 : -1),
+      y: 4 + state.random() * 2,
+      speed: (16 + state.random() * 8) * (fromLeft ? 1 : -1),
       scale,
       age: -delay,
       inkIn: 3 + state.random() * 6,
-      bob: state.random() * Math.PI * 2
+      bob: state.random() * Math.PI * 2,
+      phase: state.random() * 2
     };
   }
 
@@ -280,7 +281,7 @@
       const kind = kinds[index % kinds.length];
       const count = Math.min(kinds.length, MAX_PETS);
       const visibleX = state.width * (index + 1) / (count + 1);
-      state.pets.push(createPet(kind, index * 0.8, visibleX));
+      state.pets.push(createPet(kind, 0, visibleX, true));
     }
     if (!kinds.length) {
       state.ink.length = 0;
@@ -293,8 +294,8 @@
       const angle = state.random() * Math.PI * 2;
       const speed = 7 + state.random() * 20;
       state.ink.push({
-        x: pet.x + 27 + (state.random() - 0.5) * 9,
-        y: pet.y + 32 + (state.random() - 0.5) * 7,
+        x: pet.x + 25 + (state.random() - 0.5) * 7,
+        y: pet.y + 31 + (state.random() - 0.5) * 6,
         vx: Math.cos(angle) * speed,
         vy: Math.sin(angle) * speed,
         age: 0,
@@ -311,16 +312,25 @@
     gradient.addColorStop(1, "rgba(62,82,227,0.035)");
     context.fillStyle = gradient;
     context.fillRect(0, 0, state.width, LIMITS.ambientHeight);
-    context.strokeStyle = "rgba(111,227,255,0.14)";
+    context.strokeStyle = "rgba(111,227,255,0.17)";
     context.lineWidth = 1;
-    for (let line = 0; line < 2; line += 1) {
+    for (let line = 0; line < 3; line += 1) {
       context.beginPath();
       for (let x = 0; x <= state.width; x += 9) {
-        const y = 19 + line * 28 +
-          Math.sin(x * 0.023 + now * 0.00045 + line) * 1.7;
+        const y = 11 + line * 22 +
+          Math.sin(x * 0.012 + now * 0.00037 + line) * 1.1;
         if (x === 0) context.moveTo(x, y);
         else context.lineTo(x, y);
       }
+      context.stroke();
+    }
+    for (let bubble = 0; bubble < 7; bubble += 1) {
+      const drift = (now * 0.008 + bubble * 47) % Math.max(1, state.width);
+      const x = bubble % 2 ? state.width - drift : drift;
+      const y = 10 + (bubble * 19) % 43;
+      context.beginPath();
+      context.arc(x, y, 1 + bubble % 2, 0, Math.PI * 2);
+      context.strokeStyle = "rgba(177,238,255,0.22)";
       context.stroke();
     }
     context.strokeStyle = "rgba(63,189,158,0.34)";
@@ -347,39 +357,100 @@
       pet.age += delta;
       if (pet.age < 0) continue;
       pet.x += pet.speed * delta;
-      pet.bob += delta * 1.7;
-      pet.y = 8 + Math.sin(pet.bob) * 2;
-      const outside = pet.speed > 0 ? pet.x > state.width + 68 : pet.x < -68;
+      pet.bob += delta * 2.4;
+      pet.y = 4 + Math.sin(pet.bob) * 1.2;
+      const outside = pet.speed > 0 ? pet.x > state.width + 66 : pet.x < -66;
       if (outside) {
         const index = state.pets.indexOf(pet);
         state.pets[index] = createPet(kinds[Math.floor(state.random() * kinds.length)]);
         continue;
       }
       const scale = pet.scale;
+      const facing = pet.speed > 0 ? 1 : -1;
+      const width = 24 * scale;
+      context.save();
+      context.translate(facing > 0 ? pet.x : pet.x + width, 0);
+      context.scale(facing, 1);
+      context.fillStyle = "rgba(9,12,27,0.16)";
+      context.beginPath();
+      context.ellipse(width * 0.49, 50, width * 0.34, 1.8, 0, 0, Math.PI * 2);
+      context.fill();
       if (pet.kind === "octopus") {
-        context.fillStyle = "#7f67e8";
-        for (let leg = 0; leg < 6; leg += 1) {
-          const startX = pet.x + (12 + leg * 4) * scale / 2;
-          const startY = pet.y + 8 * scale;
+        for (let leg = 0; leg < 8; leg += 1) {
+          const side = leg < 4 ? -1 : 1;
+          const index = leg % 4;
+          const startX = width * (0.34 + index * 0.105);
+          const startY = pet.y + 7.5 * scale;
+          const wave = Math.sin(now / 175 + leg * 0.85);
+          const endX = startX + side * (4 + index * 2.1) * scale;
+          const endY = pet.y + (13 + Math.cos(now / 220 + leg) * 1.1) * scale;
           context.beginPath();
           context.moveTo(startX, startY);
           context.quadraticCurveTo(
-            startX + Math.sin(now / 210 + leg) * 4,
-            startY + 5 + Math.cos(now / 190 + leg) * 2,
-            startX + Math.sin(now / 210 + leg) * 5,
-            startY + 10 + Math.sin(now / 170 + leg) * 3
+            startX + side * 4 * scale + wave * 2,
+            startY + (3 + index * 0.65) * scale,
+            endX,
+            endY
           );
-          context.lineWidth = Math.max(2, scale * 1.3);
-          context.strokeStyle = leg % 2 ? "#986ffc" : "#765be3";
+          context.lineWidth = 2.05 * scale;
+          context.lineCap = "round";
+          context.strokeStyle = leg % 2 ? "#8060d0" : "#a17ce8";
           context.stroke();
+          context.fillStyle = "rgba(237,218,255,0.64)";
+          for (let spot = 1; spot <= 3; spot += 1) {
+            const t = spot / 4;
+            const curveX = (1 - t) * (1 - t) * startX +
+              2 * (1 - t) * t * (startX + side * 4 * scale + wave * 2) +
+              t * t * endX;
+            const curveY = (1 - t) * (1 - t) * startY +
+              2 * (1 - t) * t * (startY + (3 + index * 0.65) * scale) +
+              t * t * endY;
+            context.beginPath();
+            context.arc(curveX, curveY, 0.6 * scale, 0, Math.PI * 2);
+            context.fill();
+          }
         }
         pet.inkIn -= delta;
         if (pet.inkIn <= 0) {
           dropInk(pet);
           pet.inkIn = 4 + state.random() * 7;
         }
+      } else {
+        const stride = Math.sin(now / 105 + pet.bob) * 1.6;
+        context.lineCap = "round";
+        context.lineWidth = 2.4 * scale;
+        context.strokeStyle = pet.kind === "corgi" ? "#b96538" : "#abb4c2";
+        context.beginPath();
+        if (pet.kind === "corgi") {
+          context.moveTo(4 * scale, 11 * scale);
+          context.quadraticCurveTo(
+            1.1 * scale,
+            10 * scale + Math.sin(now / 145) * scale,
+            1.5 * scale,
+            7.5 * scale
+          );
+        } else {
+          context.moveTo(4.5 * scale, 11 * scale);
+          context.bezierCurveTo(
+            1.2 * scale, 7 * scale,
+            (1 + Math.sin(now / 190)) * scale, 3 * scale,
+            4 * scale, 4.1 * scale
+          );
+        }
+        context.stroke();
+        context.fillStyle = "#fff0cf";
+        const pawY = pet.y + 13.5 * scale;
+        for (const pawX of [7, 17]) {
+          context.fillRect(
+            (pawX - 0.35) * scale,
+            pawY + stride,
+            2.2 * scale,
+            2.2 * scale
+          );
+        }
       }
-      drawSprite(pet.kind, pet.x, pet.y + (pet.kind === "octopus" ? 0 : 1), scale);
+      drawSprite(pet.kind, 0, pet.y, scale, now, pet.phase + pet.bob);
+      context.restore();
     }
   }
 

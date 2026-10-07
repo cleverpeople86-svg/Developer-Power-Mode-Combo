@@ -18,7 +18,7 @@
 
   function preview(kind) {
     const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    const rows = DPMPets.sprites[kind];
+    const rows = DPMPets.sprites[kind][0];
     const pixels = document.createElementNS("http://www.w3.org/2000/svg", "g");
     pixels.setAttribute("shape-rendering", "crispEdges");
     for (let row = 0; row < rows.length; row += 1) {
@@ -34,7 +34,7 @@
         pixels.append(pixel);
       }
     }
-    svg.setAttribute("viewBox", "0 0 16 16");
+    svg.setAttribute("viewBox", `0 0 24 ${rows.length}`);
     svg.setAttribute("aria-hidden", "true");
     svg.append(pixels);
     return svg;

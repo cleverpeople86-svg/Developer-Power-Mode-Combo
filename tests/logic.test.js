@@ -10,6 +10,7 @@ const {
   keyboardKeyKind,
   sanitizePreferences
 } = require("../logic.js");
+const { palette, sprites } = require("../pets.js");
 
 test("eligible ordinary text inputs, textareas, and standard contenteditables are supported", () => {
   assert.equal(isSupportedEditor({ tagName: "INPUT", type: "text" }), true);
@@ -89,4 +90,20 @@ test("animation, particle, pet, ink, and combo limits match the requested bounds
     framesPerSecond: 30,
     comboInactivityMs: 1500
   });
+});
+
+test("original pet sprites have complete, consistently sized local pixel art", () => {
+  assert.deepEqual(Object.keys(sprites).sort(), ["corgi", "kitty", "octopus"]);
+  for (const [kind, animation] of Object.entries(sprites)) {
+    assert.ok(animation.length >= 1, `${kind} has at least one animation frame`);
+    for (const frame of animation) {
+      assert.equal(frame.length, 16, `${kind} frame height`);
+      for (const row of frame) {
+        assert.equal(row.length, 24, `${kind} frame row width`);
+        for (const pixel of row) {
+          assert.ok(pixel === "." || palette[pixel], `${kind} uses a defined local palette`);
+        }
+      }
+    }
+  }
 });

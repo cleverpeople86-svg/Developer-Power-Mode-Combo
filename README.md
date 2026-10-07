@@ -14,15 +14,17 @@ store publication is required.
 ![Typing combo sparks beside the active caret](screenshots/typing-combo.gif)
 
 The popup image and animated preview were captured in a local browser from the
-extension's actual popup files and content script. No webpage text or screenshot
-is uploaded by the extension.
+extension's actual popup files and content script. The pets use original,
+hand-drawn pixel art with little walking, tail-swish, swimming, and tentacle
+animations. No webpage text or screenshot is uploaded by the extension.
 
 To try the same content-script visuals locally, open
 [`screenshots/preview.html`](screenshots/preview.html) in a browser. This
 visual-only page supplies a local Chrome-storage shim and a scratch input; it
 does not replace testing the unpacked extension on an HTTP/HTTPS site. Add
 `?typing` to the preview URL for the compact typing-and-sparks layout used in
-the animated screenshot.
+the animated screenshot. Add `&capture` only when taking a screenshot from a
+backgrounded preview tab.
 
 ## Install in Chrome
 
@@ -72,7 +74,7 @@ particles.
 
 Content scripts do not run on Chrome's restricted pages, extension pages, or
 other pages Chrome blocks. Custom editors may implement input differently, so
-compatibility with every editor is not guaranteed.
+compatibility with every editor 
 
 ## Tests
 

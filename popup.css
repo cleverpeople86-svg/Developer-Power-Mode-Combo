@@ -188,13 +188,18 @@ button {
 }
 
 .pet-art svg {
+  flex: 0 0 27px;
   width: 27px;
-  height: 27px;
+  height: 18px;
   image-rendering: pixelated;
 }
 
 .pet-art svg + svg {
-  margin-left: -11px;
+  margin-left: -12px;
+}
+
+.pet-option[data-mode="all"] .pet-art {
+  flex-basis: 57px;
 }
 
 .pet-option span:last-child {
