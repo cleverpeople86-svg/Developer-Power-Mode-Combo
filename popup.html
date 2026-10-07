@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Developer Power Mode Combo</title>
+    <link rel="stylesheet" href="popup.css">
+  </head>
+  <body>
+    <main class="popup">
+      <header class="heading">
+        <div class="logo" aria-hidden="true"><span></span><span></span><span></span></div>
+        <div>
+          <h1>Developer Power Mode</h1>
+          <p class="subtitle">A tiny cheer for every keystroke.</p>
+        </div>
+      </header>
+
+      <section class="power-card" aria-labelledby="power-label">
+        <div>
+          <h2 id="power-label">Power Mode</h2>
+          <p>Typing combos &amp; neon sparks</p>
+        </div>
+        <button id="power-toggle" class="switch" type="button" role="switch"
+          aria-checked="true" aria-label="Power Mode">
+          <span></span>
+        </button>
+      </section>
+
+      <section class="pet-section" aria-labelledby="pets-label">
+        <div class="section-heading">
+          <div>
+            <h2 id="pets-label">Pick your companions</h2>
+            <p>They wander even when you pause.</p>
+          </div>
+          <span class="pet-count" aria-label="Up to three pets">3 MAX</span>
+        </div>
+        <div id="pet-options" class="pet-grid" role="group" aria-label="Pet selection"></div>
+      </section>
+      <p id="status" class="status" role="status" aria-live="polite"></p>
+      <footer>Settings stay on this device.</footer>
+    </main>
+    <script src="logic.js"></script>
+    <script src="pets.js"></script>
+    <script src="popup.js"></script>
+  </body>
+</html>
